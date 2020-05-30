@@ -2,7 +2,7 @@
 
 window.addEventListener("load", function(){
 
-    var div_users = document.querySelector("#usuarios");
+    var div_users    = document.querySelector("#usuarios");
 
     var div_patricia = document.querySelector("#patricia");
 
@@ -13,9 +13,13 @@ window.addEventListener("load", function(){
         return getPatricia();
     })
     .then(data => data.json())
-    .then(patricia => mostrarPatricia(patricia));
-
-
+    .then(patricia => {
+        mostrarPatricia(patricia)
+        return getInfo();
+    })
+    .then(data=>{
+        console.log(data);
+    });
 
     function getUsuarios(){
         return fetch("https://jsonplaceholder.typicode.com/users");
@@ -24,7 +28,28 @@ window.addEventListener("load", function(){
     function getPatricia(){
         return fetch("https://jsonplaceholder.typicode.com/users/4");
     }
-    
+
+    function getInfo(){
+        var profesor = {
+            nombre: 'Victor',
+            apellidos: 'Robles',
+            url: 'https://victorroblesweb.es'
+        };
+        return new Promise((resolve,reject) =>{
+            var profesor_string = "";
+
+            setTimeout(function(){
+                profesor_string = JSON.stringify(profesor);
+            },3000);
+
+            if(typeof profesor_string != 'string' || profesor_string == '')
+                return reject('error');
+
+            return resolve(profesor_string);
+
+        });
+    }
+   
     function listarUsuarios(data){
         return data.map((user,i)=>{
             let nombre = document.createElement('h2');
@@ -44,10 +69,6 @@ window.addEventListener("load", function(){
         div_patricia.append(nombre);
         div_patricia.append(avatar);
         document.querySelector(".loading2").style.display = 'none';
-  
-
     }
  
-
-
 });
